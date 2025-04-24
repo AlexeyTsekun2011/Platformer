@@ -14,13 +14,14 @@ class Ball(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         if self.direction == "right":
-            self.rect.x = player_rect.right - 13
+            self.rect.x = player_rect.right - 35
         elif self.direction == "left":
             self.image = pg.transform.flip(self.image,True,False)
-            self.rect.right = player_rect.left +13
+            self.rect.right = player_rect.left +35
 
 
         self.rect.centery = player_rect.centery + 20
+        self.rect.y += 5
 
     def update(self):
         if self.direction == "right":

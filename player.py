@@ -16,7 +16,7 @@ class Player(pg.sprite.Sprite):
         # Начальная скорость и гравитация
         self.velocity_x = 0
         self.velocity_y = 0
-        self.gravity = 2
+        self.gravity = 1
         self.is_jumping = False
         self.map_width = map_width * TILE_SCALE
         self.map_height = map_height * TILE_SCALE
@@ -36,7 +36,7 @@ class Player(pg.sprite.Sprite):
     def update(self, platforms):
         keys = pg.key.get_pressed()
 
-        if keys[pg.K_SPACE] and not self.is_jumping:
+        if keys[pg.K_w] and not self.is_jumping:
             self.jump()
 
         if keys[pg.K_a]:
@@ -91,7 +91,7 @@ class Player(pg.sprite.Sprite):
             self.timer = pg.time.get_ticks()
 
     def jump(self):
-        self.velocity_y = -16 * TILE_SCALE
+        self.velocity_y = -12 * TILE_SCALE
         self.is_jumping = True
 
     def load_animations(self):
