@@ -10,6 +10,7 @@ class Player(pg.sprite.Sprite):
         self.current_image = 0
         self.image = self.current_animation[self.current_image]
         self.speed = 5
+        self.touching_ground = False
         self.rect = self.image.get_rect()
         self.rect.center = (120, 500)  # Начальное положение персонажа
 
@@ -36,7 +37,7 @@ class Player(pg.sprite.Sprite):
     def update(self, platforms):
         keys = pg.key.get_pressed()
 
-        if keys[pg.K_w] and not self.is_jumping:
+        if keys[pg.K_w] and not self.is_jumping and self.touching_ground:
             self.jump()
 
         if keys[pg.K_a]:
@@ -72,6 +73,7 @@ class Player(pg.sprite.Sprite):
                 self.rect.bottom = platform.rect.top
                 self.velocity_y = 0
                 self.is_jumping = False
+                self.touching_ground=True
 
             if platform.rect.collidepoint(self.rect.midtop):
                 self.rect.top = platform.rect.bottom
