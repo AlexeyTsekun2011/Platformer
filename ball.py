@@ -22,11 +22,14 @@ class Ball(pg.sprite.Sprite):
 
         self.rect.centery = player_rect.centery + 20
 
-    def update(self):
+    def update(self,left_edge,right_edge):
         if self.direction == "right":
             self.rect.x += self.speed
         elif self.direction == "left":
             self.rect.x -= self.speed
+
+        if self.rect.right < left_edge or self.rect.left > right_edge:
+            self.kill()
 
 
 

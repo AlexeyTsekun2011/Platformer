@@ -7,8 +7,12 @@ from ball import Ball
 
 # pip install pytmx
 pg.init()
-
+pg.mixer.init()
+pg.mixer.music.load("sounds/music/02. Title Theme.mp3")
+pg.mixer.music.play()
 font = pg.font.Font(None, 72)
+shoot = pg.mixer.Sound("sounds/sounds/163456__lemudcrab__pistol-shot.wav")
+coin = pg.mixer.Sound("sounds/sounds/super-mario-coin-sound-effect.wav")
 
 
 class Platform(pg.sprite.Sprite):
@@ -18,6 +22,75 @@ class Platform(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x * TILE_SCALE
         self.rect.y = y * TILE_SCALE
+
+
+class Portal(pg.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.load_animation()
+        self.current_image = 0
+        self.image = self.animation[self.current_image]
+        self.rect = self.image.get_rect()
+        self.rect.x = x * TILE_SCALE
+        self.rect.bottom = y * TILE_SCALE
+        self.timer = pg.time.get_ticks()
+        self.interval = 200
+
+    def load_animation(self):
+        num_images = 8
+        tile_size = 64
+        self.animation = []
+        spritesheet = pg.image.load("Assets/portals/Green Portal Sprite Sheet.png")
+        for i in range(num_images):
+            x = i * tile_size
+            y = 0
+            rect = pg.Rect(x, y, tile_size, tile_size)
+            image = spritesheet.subsurface(rect)
+            image = pg.transform.scale_by(image, TILE_SCALE)  # увеличение картинки в 2 раза
+            image = pg.transform.flip(image, True, False)
+            self.animation.append(image)
+
+    def update(self):
+        if pg.time.get_ticks() - self.timer > self.interval:
+            self.current_image += 1
+            if self.current_image >= len(self.animation):
+                self.current_image = 0
+            self.image = self.animation[self.current_image]
+            self.timer = pg.time.get_ticks()
+
+
+class Coin(pg.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.load_animation()
+        self.current_image = 0
+        self.image = self.animation[self.current_image]
+        self.rect = self.image.get_rect()
+        self.rect.x = x * TILE_SCALE
+        self.rect.y = y * TILE_SCALE
+        self.timer = pg.time.get_ticks()
+        self.interval = 200
+
+    def load_animation(self):
+        num_images = 5
+        tile_size = 16
+        self.animation = []
+        spritesheet = pg.image.load("Assets/Coin_Gems/MonedaD.png")
+        for i in range(num_images):
+            x = i * tile_size
+            y = 0
+            rect = pg.Rect(x, y, tile_size, tile_size)
+            image = spritesheet.subsurface(rect)
+            image = pg.transform.scale_by(image, TILE_SCALE)  # увеличение картинки в 2 раза
+            self.animation.append(image)
+
+    def update(self):
+        if pg.time.get_ticks() - self.timer > self.interval:
+            self.current_image += 1
+            if self.current_image >= len(self.animation):
+                self.current_image = 0
+            self.image = self.animation[self.current_image]
+            self.timer = pg.time.get_ticks()
 
 
 class Player(pg.sprite.Sprite):
@@ -150,6 +223,7 @@ class Game:
         pg.display.set_caption("Платформер")
         self.clock = pg.time.Clock()
         self.is_running = False
+        self.level = 1
 
         self.setup()
 
@@ -164,13 +238,17 @@ class Game:
         self.platforms = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
         self.balls = pg.sprite.Group()
+        self.coins = pg.sprite.Group()
+        self.portals = pg.sprite.Group()
 
-        self.tmx_map = pytmx.load_pygame("level1.tmx")
+        self.tmx_map = pytmx.load_pygame(f"level{self.level}.tmx")
         self.map_pixel_width = self.tmx_map.width * self.tmx_map.tilewidth * TILE_SCALE
         self.map_pixel_height = self.tmx_map.height * self.tmx_map.tileheight * TILE_SCALE
 
         self.player = Player(self.map_pixel_width, self.map_pixel_height)
         self.all_sprites.add(self.player)
+
+
 
         self.camera_x = 0
         self.camera_y = 0
@@ -199,6 +277,16 @@ class Game:
                                                    y * self.tmx_map.tileheight * TILE_SCALE)
                         self.all_sprites.add(robo_pumpkin)
                         self.enemies.add(robo_pumpkin)
+                    elif layer.name == "coins":
+                        coin = Coin(x * self.tmx_map.tilewidth,
+                                    y * self.tmx_map.tilewidth)
+                        self.all_sprites.add(coin)
+                        self.coins.add(coin)
+                    elif layer.name == "portals":
+                        portal = Portal(x * self.tmx_map.tilewidth,
+                                        y * self.tmx_map.tilewidth)
+                        self.all_sprites.add(portal)
+                        self.portals.add(portal)
 
                     else:
                         platform = Platform(tile, x * self.tmx_map.tilewidth,
@@ -206,6 +294,9 @@ class Game:
                                             self.tmx_map.tilewidth,
                                             self.tmx_map.tileheight)
                         self.all_sprites.add(platform)
+
+        self.collected_coins = 0
+        self.coins_amount = len(self.coins)
 
         self.run()
 
@@ -232,11 +323,12 @@ class Game:
                     self.setup()
             if event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 1:
+                    shoot.play()
                     if self.player.current_animation in (
-                    self.player.idle_animation_right, self.player.running_animation_right):
+                            self.player.idle_animation_right, self.player.running_animation_right):
                         ball = Ball(self.player.rect, "right")
                     elif self.player.current_animation in (
-                    self.player.idle_animation_left, self.player.running_animation_left):
+                            self.player.idle_animation_left, self.player.running_animation_left):
                         ball = Ball(self.player.rect, "left")
                         # if ball.rect.y < 0:
                         #     ball.kill()
@@ -244,9 +336,13 @@ class Game:
                     self.all_sprites.add(ball)
                     self.balls.add(ball)
 
-
-
     def update(self):
+        self.player.update(self.platforms)
+        self.balls.update(self.player.rect.x - SCREEN_WIDTH // 2,
+                          self.player.rect.x + SCREEN_WIDTH // 2)
+        self.enemies.update(self.platforms)
+        self.coins.update()
+        self.portals.update()
         if self.player.hp <= 0:
             self.mode = "game over"
             return
@@ -254,9 +350,20 @@ class Game:
             if pg.sprite.collide_mask(self.player, enemy):
                 self.player.get_damage()
 
-        pg.sprite.groupcollide(self.balls,self.enemies,True,True)
-        pg.sprite.groupcollide(self.balls,self.platforms,True,False)
+        if self.player.rect.y >= self.map_pixel_height + 300:
+            self.player.hp = 0
 
+        pg.sprite.groupcollide(self.balls, self.enemies, True, True)
+        pg.sprite.groupcollide(self.balls, self.platforms, True, False)
+        hits = pg.sprite.spritecollide(self.player, self.coins, True)
+
+        if pg.sprite.spritecollide(self.player, self.portals, False):
+            if self.collected_coins > self.coins_amount // 2:
+                self.level += 1
+                self.setup()
+        for hit in hits:
+            self.collected_coins += 1
+            coin.play()
 
         self.camera_x = self.player.rect.x - SCREEN_WIDTH // 2
         self.camera_y = self.player.rect.y - SCREEN_HEIGHT // 2
@@ -273,8 +380,11 @@ class Game:
 
         pg.draw.rect(self.screen, pg.Color("red"), (5, 5, self.player.hp * 20, 20))
         pg.draw.rect(self.screen, pg.Color("black"), (5, 5, 200, 20), 3)
+        coin_text = font.render(f"Coins {self.collected_coins}",True,pg.Color("Black"))
+        coin_text_rect = coin_text.get_rect(center=(SCREEN_WIDTH // 2,100))
+        self.screen.blit(coin_text,coin_text_rect)
         if self.mode == "game over":
-            text = font.render("Игра окончена", True, pg.Color("Red"))
+            text = font.render("Game over", True, pg.Color("Red"))
             text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
             self.screen.blit(text, text_rect)
 

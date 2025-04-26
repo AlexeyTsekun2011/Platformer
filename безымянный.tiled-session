@@ -13,11 +13,19 @@
             "scaleInEditor": 1
         },
         "level1.tmx": {
-            "scale": 0.9610267857142857,
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 528.5,
+                "y": 591
+            }
+        },
+        "level2.tmx": {
+            "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 560.8584568216659,
-                "y": 533.2837831560366
+                "x": 674,
+                "y": 589.3333333333334
             }
         },
         "level2.tsx": {
@@ -25,7 +33,7 @@
             "scaleInEditor": 1
         }
     },
-    "last.imagePath": "D:/MemeCat/Platformer/Sprite Pack 2/4 - Robo Pumpkin",
+    "last.imagePath": "D:/MemeCat/Platformer/Assets/portals",
     "map.height": 40,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
@@ -43,7 +51,7 @@
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
-        "height": 16,
-        "width": 16
+        "height": 64,
+        "width": 64
     }
 }
