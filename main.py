@@ -248,8 +248,6 @@ class Game:
         self.player = Player(self.map_pixel_width, self.map_pixel_height)
         self.all_sprites.add(self.player)
 
-
-
         self.camera_x = 0
         self.camera_y = 0
         self.camera_speed = 4
@@ -380,9 +378,9 @@ class Game:
 
         pg.draw.rect(self.screen, pg.Color("red"), (5, 5, self.player.hp * 20, 20))
         pg.draw.rect(self.screen, pg.Color("black"), (5, 5, 200, 20), 3)
-        coin_text = font.render(f"Coins {self.collected_coins}",True,pg.Color("Black"))
-        coin_text_rect = coin_text.get_rect(center=(SCREEN_WIDTH // 2,100))
-        self.screen.blit(coin_text,coin_text_rect)
+        coin_text = font.render(f"Coins {self.collected_coins}", True, pg.Color("Black"))
+        coin_text_rect = coin_text.get_rect(center=(SCREEN_WIDTH // 2, 100))
+        self.screen.blit(coin_text, coin_text_rect)
         if self.mode == "game over":
             text = font.render("Game over", True, pg.Color("Red"))
             text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
