@@ -122,7 +122,7 @@ class Player(pg.sprite.Sprite):
 
     def get_damage(self):
         if pg.time.get_ticks() - self.damage_timer > self.damage_interval:
-            self.hp -= 1
+            self.hp -= 2
             self.damage_timer = pg.time.get_ticks()
 
     def update(self, platforms):
@@ -135,13 +135,13 @@ class Player(pg.sprite.Sprite):
             if self.current_animation != self.running_animation_left:
                 self.current_animation = self.running_animation_left
                 self.current_image = 0
-            self.velocity_x = -10
+            self.velocity_x = -5
 
         elif keys[pg.K_d]:
             if self.current_animation != self.running_animation_right:
                 self.current_animation = self.running_animation_right
                 self.current_image = 0
-            self.velocity_x = 10
+            self.velocity_x = 5
         else:
             if self.current_animation == self.running_animation_right:
                 self.current_animation = self.idle_animation_right
