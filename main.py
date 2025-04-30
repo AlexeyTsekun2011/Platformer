@@ -339,15 +339,17 @@ class Game:
                     self.balls.add(ball)
 
     def update(self):
+        self.enemies.update(self.platforms)
+        if self.player.hp <= 0:
+            self.mode = "game over"
+            self.player.kill()
+            return
         self.player.update(self.platforms)
         self.balls.update(self.player.rect.x - SCREEN_WIDTH // 2,
                           self.player.rect.x + SCREEN_WIDTH // 2)
-        self.enemies.update(self.platforms)
         self.coins.update()
         self.portals.update()
-        if self.player.hp <= 0:
-            self.mode = "game over"
-            return
+
         for enemy in self.enemies.sprites():
             if pg.sprite.collide_mask(self.player, enemy):
                 self.player.get_damage()
