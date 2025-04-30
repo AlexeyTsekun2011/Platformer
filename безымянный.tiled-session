@@ -30,16 +30,16 @@
             "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 562.6666666666666,
-                "y": 319.33333333333326
+                "x": 584,
+                "y": 473.33333333333337
             }
         },
         "level2.tmx": {
-            "scale": 1.5,
+            "scale": 0.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 956,
-                "y": 498
+                "x": 1072,
+                "y": 668
             }
         },
         "level2.tsx": {

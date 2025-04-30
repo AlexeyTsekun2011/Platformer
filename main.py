@@ -110,6 +110,7 @@ class Player(pg.sprite.Sprite):
         self.velocity_y = 0
         self.gravity = 2
         self.is_jumping = False
+        self.on_ground = True
         self.map_width = map_width * TILE_SCALE
         self.map_height = map_height * TILE_SCALE
 
@@ -129,7 +130,8 @@ class Player(pg.sprite.Sprite):
         keys = pg.key.get_pressed()
 
         if keys[pg.K_SPACE] and not self.is_jumping:
-            self.jump()
+            if self.on_ground:
+                self.jump()
 
         if keys[pg.K_a]:
             if self.current_animation != self.running_animation_left:
@@ -159,11 +161,13 @@ class Player(pg.sprite.Sprite):
         self.velocity_y += self.gravity
         self.rect.y += self.velocity_y
         # Проверка на столкновение с платформой во время прыжка
+        self.on_ground = False
         for platform in platforms:
             if platform.rect.collidepoint(self.rect.midbottom):
                 self.rect.bottom = platform.rect.top
                 self.velocity_y = 0
                 self.is_jumping = False
+                self.on_ground = True
 
             if platform.rect.collidepoint(self.rect.midtop):
                 self.rect.top = platform.rect.bottom
@@ -247,7 +251,7 @@ class Game:
 
         self.player = Player(self.map_pixel_width, self.map_pixel_height)
         self.all_sprites.add(self.player)
-
+        # (f"game/levels_tmx/level{self.level}.tmx")
         self.camera_x = 0
         self.camera_y = 0
         self.camera_speed = 4
