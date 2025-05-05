@@ -8,7 +8,9 @@
 ## Features
 
 - Enemy behavior (crabs, pumpkins,soon...):
- ![Enemies](ScreenShots/PlatformerDemo (2).png)
+
+
+![Enemies](ScreenShots/PlatformerDemo (2).png)
 
 
 - Portals for transitioning between areas:
