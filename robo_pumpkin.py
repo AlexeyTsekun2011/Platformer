@@ -41,7 +41,7 @@ class RoboPumpkin(pg.sprite.Sprite):
 
         self.running_animation_left = []
         num_images = 2
-        spritesheet = pg.image.load("Sprite pack 2/4 - Robo Pumpkin/Walking (16 x 16).png")
+        spritesheet = pg.image.load("Sprite Pack 2/4 - Robo Pumpkin/Walking (16 x 16).png")
         for i in range(num_images):
             x = i * tile_size
             y = 0

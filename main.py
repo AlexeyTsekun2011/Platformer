@@ -110,6 +110,7 @@ class Player(pg.sprite.Sprite):
         self.velocity_y = 0
         self.gravity = 2
         self.is_jumping = False
+        self.on_ground = True
         self.map_width = map_width * TILE_SCALE
         self.map_height = map_height * TILE_SCALE
 
@@ -122,26 +123,27 @@ class Player(pg.sprite.Sprite):
 
     def get_damage(self):
         if pg.time.get_ticks() - self.damage_timer > self.damage_interval:
-            self.hp -= 1
+            self.hp -= 2
             self.damage_timer = pg.time.get_ticks()
 
     def update(self, platforms):
         keys = pg.key.get_pressed()
 
         if keys[pg.K_SPACE] and not self.is_jumping:
-            self.jump()
+            if self.on_ground:
+                self.jump()
 
         if keys[pg.K_a]:
             if self.current_animation != self.running_animation_left:
                 self.current_animation = self.running_animation_left
                 self.current_image = 0
-            self.velocity_x = -10
+            self.velocity_x = -5
 
         elif keys[pg.K_d]:
             if self.current_animation != self.running_animation_right:
                 self.current_animation = self.running_animation_right
                 self.current_image = 0
-            self.velocity_x = 10
+            self.velocity_x = 5
         else:
             if self.current_animation == self.running_animation_right:
                 self.current_animation = self.idle_animation_right
@@ -159,11 +161,13 @@ class Player(pg.sprite.Sprite):
         self.velocity_y += self.gravity
         self.rect.y += self.velocity_y
         # Проверка на столкновение с платформой во время прыжка
+        self.on_ground = False
         for platform in platforms:
             if platform.rect.collidepoint(self.rect.midbottom):
                 self.rect.bottom = platform.rect.top
                 self.velocity_y = 0
                 self.is_jumping = False
+                self.on_ground = True
 
             if platform.rect.collidepoint(self.rect.midtop):
                 self.rect.top = platform.rect.bottom
@@ -247,9 +251,7 @@ class Game:
 
         self.player = Player(self.map_pixel_width, self.map_pixel_height)
         self.all_sprites.add(self.player)
-
-
-
+        # (f"game/levels_tmx/level{self.level}.tmx")
         self.camera_x = 0
         self.camera_y = 0
         self.camera_speed = 4
@@ -338,15 +340,17 @@ class Game:
                     self.balls.add(ball)
 
     def update(self):
+        self.enemies.update(self.platforms)
+        if self.player.hp <= 0:
+            self.mode = "game over"
+            self.player.kill()
+            return
         self.player.update(self.platforms)
         self.balls.update(self.player.rect.x - SCREEN_WIDTH // 2,
                           self.player.rect.x + SCREEN_WIDTH // 2)
-        self.enemies.update(self.platforms)
         self.coins.update()
         self.portals.update()
-        if self.player.hp <= 0:
-            self.mode = "game over"
-            return
+
         for enemy in self.enemies.sprites():
             if pg.sprite.collide_mask(self.player, enemy):
                 self.player.get_damage()
@@ -389,9 +393,9 @@ class Game:
 
         pg.draw.rect(self.screen, pg.Color("red"), (5, 5, self.player.hp * 20, 20))
         pg.draw.rect(self.screen, pg.Color("black"), (5, 5, 200, 20), 3)
-        coin_text = font.render(f"Coins {self.collected_coins}",True,pg.Color("Black"))
-        coin_text_rect = coin_text.get_rect(center=(SCREEN_WIDTH // 2,100))
-        self.screen.blit(coin_text,coin_text_rect)
+        coin_text = font.render(f"Coins {self.collected_coins}", True, pg.Color("Black"))
+        coin_text_rect = coin_text.get_rect(center=(SCREEN_WIDTH // 2, 100))
+        self.screen.blit(coin_text, coin_text_rect)
         if self.mode == "game over":
             text = font.render("Game over", True, pg.Color("Red"))
             text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
