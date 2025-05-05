@@ -3,36 +3,67 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "level1.tmx",
+    "activeFile": "level2.tmx",
     "expandedProjectPaths": [
         "."
     ],
     "fileStates": {
         "Assets.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "Green Portal Sprite Sheet.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "MonedaD.tsx": {
+            "scaleInDock": 1
+        },
+        "Movement_(Flip_image_back_and_forth) (32 x 32).tsx": {
+            "scaleInDock": 1
+        },
+        "Standing (16 x 16).tsx": {
+            "scaleInDock": 1
+        },
         "level1.tmx": {
-            "scale": 1,
-            "selectedLayer": 1,
+            "scale": 0.75,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 528.5,
-                "y": 591
+                "x": 584,
+                "y": 473.33333333333337
             }
         },
         "level2.tmx": {
-            "scale": 1,
+            "scale": 0.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 429.5,
-                "y": 521
+                "x": 1072,
+                "y": 668
             }
         },
         "level2.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "level3.tmx": {
+            "scale": 0.7981696428571429,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 596.3644499133061,
+                "y": 319.48095531069976
+            }
+        },
+        "безымянный.tmx": {
+            "scale": 0.7981696428571429,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 559.4048884165782,
+                "y": 319.48095531069976
+            }
         }
     },
+    "last.externalTilesetPath": "D:/MemeCat/Platformer",
     "last.imagePath": "D:/MemeCat/Platformer/Assets/portals",
     "map.height": 40,
     "map.lastUsedFormat": "tmx",
@@ -41,12 +72,18 @@
     "map.width": 70,
     "openFiles": [
         "level1.tmx",
-        "Assets.tsx"
+        "Assets.tsx",
+        "level2.tmx",
+        "безымянный.tmx",
+        "level3.tmx"
     ],
     "project": "безымянный.tiled-project",
     "recentFiles": [
-        "Assets.tsx",
         "level1.tmx",
+        "Assets.tsx",
+        "level3.tmx",
+        "безымянный.tmx",
+        "level2.tmx",
         "level2.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
