@@ -4,7 +4,7 @@ from constants import *
 from Crab import Crab
 from robo_pumpkin import RoboPumpkin
 from ball import Ball
-
+from player import Player
 # pip install pytmx
 pg.init()
 pg.mixer.init()
@@ -306,6 +306,7 @@ class Game:
         self.is_running = True
         while self.is_running:
             self.event()
+            self.start_over()
             self.update()
             self.draw()
             self.clock.tick(FPS)
@@ -371,9 +372,17 @@ class Game:
 
         self.camera_x = self.player.rect.x - SCREEN_WIDTH // 2
         self.camera_y = self.player.rect.y - SCREEN_HEIGHT // 2
-
+        self.player.update(self.platforms)
+        self.balls.update()
         self.camera_x = max(0, min(self.camera_x, self.map_pixel_width - SCREEN_WIDTH))  # Построение границ карты
         self.camera_y = max(0, min(self.camera_y, self.map_pixel_height - SCREEN_HEIGHT))
+
+
+    def start_over(self):
+        if self.player.rect.y > self.map_pixel_height:
+            game = Game()
+
+
 
     def draw(self):
         # self.screen.fill("light blue")
